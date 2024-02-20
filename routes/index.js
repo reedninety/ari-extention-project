@@ -35,9 +35,9 @@ router.get("/events", async function (req, res, next) {
 // POST EVENT
 router.post("/events", async function (req, res, next) {
   try {
-    const { eventname, location, date, expirationdate } = req.body;
+    const { eventname, location, date } = req.body;
     await db(
-      `INSERT INTO eventlist (eventname, location, date, expirationdate) VALUES ("${eventname}", "${location}"," ${date}", "${expirationdate}");`
+      `INSERT INTO eventlist (eventname, location, date, expirationdate) VALUES ("${eventname}", "${location}"," ${date}");`
     );
     res.status(201).send({ message: "Event added!" });
   } catch (err) {
@@ -71,5 +71,7 @@ router.post("/friends/:id", eventMustExist, async function (req, res, next) {
     res.status(500).send(err);
   }
 });
+
+// create endpoint to use the function to send email
 
 module.exports = router;

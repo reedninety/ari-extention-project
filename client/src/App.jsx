@@ -1,9 +1,61 @@
 import { useState, useEffect } from "react";
-
 import "./App.css";
 
-function App() {
-  return <div className="container text-center">Hello World!</div>;
-}
+export default function App() {
+  const [eventsList, setEventsList] = useState([]);
+  const [eventType, setEvent] = useState({
+    eventname: "",
+    location: "",
+    date: "",
+  });
 
-export default App;
+  const handleEventInputChange = (e) => {
+    const { name, value } = e.target;
+    setEvent((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleEventSubmit = (e) => {
+    e.preventDefault();
+    console.log(eventType);
+  };
+  return (
+    <div className="container text-center">
+      <h1>EVENTS MAIL</h1>
+      <form className="mt-3" onSubmit={handleEventSubmit}>
+        <div className="mb-3">
+          <label className="form-label">Event</label>
+          <input
+            className="form-control"
+            type="text"
+            name="eventname"
+            value={eventType.eventname}
+            onChange={handleEventInputChange}
+          />
+        </div>
+        <div className="mb-3">
+          <label className="form-label">Location</label>
+          <input
+            className="form-control"
+            type="text"
+            name="location"
+            value={eventType.location}
+            onChange={handleEventInputChange}
+          />
+        </div>
+        <div className="mb-3">
+          <label className="form-label">Date and Time</label>
+          <input
+            className="form-control"
+            type="datetime-local"
+            name="date"
+            value={eventType.date}
+            onChange={handleEventInputChange}
+          />
+        </div>
+        <button type="submit" className="btn btn-primary">
+          Create Event
+        </button>
+      </form>
+    </div>
+  );
+}

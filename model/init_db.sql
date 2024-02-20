@@ -15,6 +15,5 @@ CREATE TABLE eventlist(
     eventname VARCHAR(40) not null, 
     location VARCHAR(255) not null,
     date DATETIME NOT NULL,
-    expirationdate DATE NOT NULL,
     PRIMARY KEY (id)
     );
