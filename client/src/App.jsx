@@ -1,61 +1,40 @@
 import { useState, useEffect } from "react";
 import "./App.css";
+import { Routes, Route, Link, Outlet } from "react-router-dom";
+import Page404 from "./pages/Page404";
+import Home from "./pages/Home";
+import Invite from "./pages/Invite";
+import Events from "./pages/Events";
 
 export default function App() {
-  const [eventsList, setEventsList] = useState([]);
-  const [eventType, setEvent] = useState({
-    eventname: "",
-    location: "",
-    date: "",
-  });
-
-  const handleEventInputChange = (e) => {
-    const { name, value } = e.target;
-    setEvent((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleEventSubmit = (e) => {
-    e.preventDefault();
-    console.log(eventType);
-  };
   return (
     <div className="container text-center">
-      <h1>EVENTS MAIL</h1>
-      <form className="mt-3" onSubmit={handleEventSubmit}>
-        <div className="mb-3">
-          <label className="form-label">Event</label>
-          <input
-            className="form-control"
-            type="text"
-            name="eventname"
-            value={eventType.eventname}
-            onChange={handleEventInputChange}
-          />
-        </div>
-        <div className="mb-3">
-          <label className="form-label">Location</label>
-          <input
-            className="form-control"
-            type="text"
-            name="location"
-            value={eventType.location}
-            onChange={handleEventInputChange}
-          />
-        </div>
-        <div className="mb-3">
-          <label className="form-label">Date and Time</label>
-          <input
-            className="form-control"
-            type="datetime-local"
-            name="date"
-            value={eventType.date}
-            onChange={handleEventInputChange}
-          />
-        </div>
-        <button type="submit" className="btn btn-primary">
-          Create Event
-        </button>
-      </form>
+      <div id="sidebar">
+        <ul className="nav justify-content-end">
+          <li className="nav-item">
+            <Link to={"/"} className="nav-link">
+              Home
+            </Link>
+          </li>
+          <li className="nav-item">
+            <Link to={"/invite"} className="nav-link">
+              Invite
+            </Link>
+          </li>
+          <li className="nav-item">
+            <Link to={"/events"} className="nav-link">
+              Events
+            </Link>
+          </li>
+        </ul>
+      </div>
+      <h1>OWL MAIL</h1>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/invite" element={<Invite />} />
+        <Route path="/events" element={<Events />} />
+        <Route path="*" element={<Page404 />} />
+      </Routes>
     </div>
   );
 }

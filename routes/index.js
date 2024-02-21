@@ -1,21 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const db = require("../model/helper");
-
-const eventMustExist = async function (req, res, next) {
-  try {
-    const { id } = req.params;
-    const results = await db(`SELECT * FROM eventlist WHERE id = ${id}`);
-    if (results.data.length) {
-      // req.event = results.data[0];
-      next();
-    } else {
-      res.status(404).send({ message: "Event not found" });
-    }
-  } catch (err) {
-    res.status(500).send(err);
-  }
-};
+const eventMustExist = require("../guards/eventMustExist");
 
 /* GET home page. */
 router.get("/", function (req, res, next) {
@@ -32,12 +18,21 @@ router.get("/events", async function (req, res, next) {
   }
 });
 
-// POST EVENT
+// POST EVENT and invitees
 router.post("/events", async function (req, res, next) {
+  const { event, friend } = req.body;
   try {
-    const { eventname, location, date } = req.body;
     await db(
-      `INSERT INTO eventlist (eventname, location, date) VALUES ("${eventname}", "${location}"," ${date}");`
+      `INSERT INTO eventlist (eventname, location, date) VALUES ("${event.eventname}", "${event.location}", "${event.date}");`
+    );
+
+    const results = await db(
+      `SELECT id FROM eventlist WHERE eventname = "${event.eventname}";`
+    );
+    const eventid = results.data[0].id;
+
+    await db(
+      `INSERT INTO friends (firstname, lastname, email, confirmed, eventid) VALUES ("${friend.firstname}", "${friend.lastname}","${friend.email}", 0, ${eventid});`
     );
     res.status(201).send({ message: "Event added!" });
   } catch (err) {
@@ -57,28 +52,12 @@ router.delete("/events/:id", eventMustExist, async function (req, res, next) {
   }
 });
 
-// POST INVITEE
-
-router.post("/friends/:id", eventMustExist, async function (req, res, next) {
+// UPDATE ENDPOINT FOR THE EMAIL /friends/id
+router.put("/friends/:id", eventMustExist, async (req, res, next) => {
+  const { id } = req.params;
   try {
-    const { id } = req.params;
-    const { firstname, lastname, email, confirmed } = req.body;
     await db(
-      `INSERT INTO friends (firstname, lastname, email, confirmed, eventid) VALUES ("${firstname}", "${lastname}", "${email}", 0, ${id});`
-    );
-    res.status(201).send({ message: "Friends added!" });
-  } catch (err) {
-    res.status(500).send(err);
-  }
-});
-
-// UPDATE ENDPOINT FOR THE EMAIL
-router.put("/friends/:id/:friendid", eventMustExist, async (req, res, next) => {
-  try {
-    const { id, friendid } = req.params;
-
-    await db(
-      `UPDATE friends SET confirmed = !confirmed WHERE id = ${friendid};`
+      `UPDATE friends SET confirmed = !confirmed WHERE eventid = ${id};`
     );
     res.status(201).send({ message: "Friend will come to the event!" });
   } catch (err) {
