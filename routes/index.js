@@ -7,7 +7,7 @@ const eventMustExist = async function (req, res, next) {
     const { id } = req.params;
     const results = await db(`SELECT * FROM eventlist WHERE id = ${id}`);
     if (results.data.length) {
-      req.event = results.data[0];
+      // req.event = results.data[0];
       next();
     } else {
       res.status(404).send({ message: "Event not found" });
@@ -37,7 +37,7 @@ router.post("/events", async function (req, res, next) {
   try {
     const { eventname, location, date } = req.body;
     await db(
-      `INSERT INTO eventlist (eventname, location, date, expirationdate) VALUES ("${eventname}", "${location}"," ${date}");`
+      `INSERT INTO eventlist (eventname, location, date) VALUES ("${eventname}", "${location}"," ${date}");`
     );
     res.status(201).send({ message: "Event added!" });
   } catch (err) {
@@ -50,7 +50,7 @@ router.delete("/events/:id", eventMustExist, async function (req, res, next) {
   try {
     const { id } = req.params;
     // DELETE IN sql
-    await db(`DELETE FROM evenlist WHERE id = ${id}`);
+    await db(`DELETE FROM eventlist WHERE id = ${id}`);
     res.status(201).send({ message: "Event deleted!" });
   } catch (err) {
     res.status(500).send(err);
@@ -62,9 +62,9 @@ router.delete("/events/:id", eventMustExist, async function (req, res, next) {
 router.post("/friends/:id", eventMustExist, async function (req, res, next) {
   try {
     const { id } = req.params;
-    const { firstname, lastname, email } = req.body;
+    const { firstname, lastname, email, confirmed } = req.body;
     await db(
-      `INSERT INTO friends (firstname, lastname, email, eventid) VALUES ("${firstname}", "${lastname}", "${email}", ${id});`
+      `INSERT INTO friends (firstname, lastname, email, confirmed, eventid) VALUES ("${firstname}", "${lastname}", "${email}", 0, ${id});`
     );
     res.status(201).send({ message: "Friends added!" });
   } catch (err) {
@@ -72,6 +72,18 @@ router.post("/friends/:id", eventMustExist, async function (req, res, next) {
   }
 });
 
-// create endpoint to use the function to send email
+// UPDATE ENDPOINT FOR THE EMAIL
+router.put("/friends/:id/:friendid", eventMustExist, async (req, res, next) => {
+  try {
+    const { id, friendid } = req.params;
+
+    await db(
+      `UPDATE friends SET confirmed = !confirmed WHERE id = ${friendid};`
+    );
+    res.status(201).send({ message: "Friend will come to the event!" });
+  } catch (err) {
+    res.status(500).send(err);
+  }
+});
 
 module.exports = router;
