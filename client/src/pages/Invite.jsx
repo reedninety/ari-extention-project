@@ -1,46 +1,49 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 export default function Invite() {
-  const [eventsList, setEventsList] = useState([]);
-  const [eventType, setEvent] = useState({
-    eventname: "",
-    location: "",
-    date: "",
+  const [input, setInput] = useState({
+    event: { eventname: "", location: "", date: "" },
+    friend: { firstname: "", lastname: "", email: "" },
   });
-  async function getEvents() {
+  async function addEvent() {
     try {
-      const response = await fetch("/api/events");
+      const response = await fetch("/api/events/", {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+        },
+        body: JSON.stringify(input),
+      });
       const data = await response.json();
-      setEventsList(data);
     } catch (err) {
       console.log(err);
     }
   }
 
-  useEffect(() => {
-    getEvents();
-  }, []);
-
-  const handleEventInputChange = (e) => {
+  const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setEvent((prev) => ({ ...prev, [name]: value }));
+    setInput((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleEventSubmit = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(eventType);
+    addEvent();
+    setInput({
+      event: { eventname: "", location: "", date: "" },
+      friend: { firstname: "", lastname: "", email: "" },
+    });
   };
   return (
     <div>
-      <form className="mt-3" onSubmit={handleEventSubmit}>
+      <form className="mt-3" onSubmit={handleSubmit}>
         <div className="mb-3">
           <label className="form-label">Event</label>
           <input
             className="form-control"
             type="text"
             name="eventname"
-            value={eventType.eventname}
-            onChange={handleEventInputChange}
+            value={input.event.eventname}
+            onChange={handleInputChange}
           />
         </div>
         <div className="mb-3">
@@ -49,8 +52,8 @@ export default function Invite() {
             className="form-control"
             type="text"
             name="location"
-            value={eventType.location}
-            onChange={handleEventInputChange}
+            value={input.event.location}
+            onChange={handleInputChange}
           />
         </div>
         <div className="mb-3">
@@ -59,8 +62,39 @@ export default function Invite() {
             className="form-control"
             type="datetime-local"
             name="date"
-            value={eventType.date}
-            onChange={handleEventInputChange}
+            value={input.event.date}
+            onChange={handleInputChange}
+          />
+        </div>
+        <div className="mb-3">
+          <label className="form-label">First Name</label>
+          <input
+            className="form-control"
+            type="text"
+            name="firstname"
+            value={input.friend.firstname}
+            onChange={handleInputChange}
+          />
+        </div>
+        <div className="mb-3">
+          <label className="form-label">Last Name</label>
+          <input
+            className="form-control"
+            type="text"
+            name="lastname"
+            value={input.friend.lastname}
+            onChange={handleInputChange}
+          />
+        </div>
+        <div className="mb-3">
+          <label className="form-label">Email</label>
+          <input
+            className="form-control"
+            type="email"
+            name="email"
+            value={input.friend.email}
+            onChange={handleInputChange}
+            required
           />
         </div>
         <button type="submit" className="btn btn-primary">

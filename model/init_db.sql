@@ -12,13 +12,13 @@ SET foreign_key_checks = 1;
 
 CREATE TABLE eventlist(
     id INT NOT NULL AUTO_INCREMENT, 
-    eventname VARCHAR(40) not null, 
+    eventname VARCHAR(40) unique, 
     location VARCHAR(255) not null,
     date DATETIME NOT NULL,
     PRIMARY KEY (id)
     );
 
-CREATE TABLE friends(
+CREATE TABLE friendslist(
     id INT NOT NULL PRIMARY KEY AUTO_INCREMENT, 
     firstname VARCHAR(255) not null, 
     lastname VARCHAR(255) not null,
