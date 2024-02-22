@@ -32,7 +32,7 @@ router.post("/events", async function (req, res, next) {
     const eventid = results.data[0].id;
 
     await db(
-      `INSERT INTO friends (firstname, lastname, email, confirmed, eventid) VALUES ("${friend.firstname}", "${friend.lastname}","${friend.email}", 0, ${eventid});`
+      `INSERT INTO friendslist (firstname, lastname, email, confirmed, eventid) VALUES ("${friend.firstname}", "${friend.lastname}","${friend.email}", 0, ${eventid});`
     );
     res.status(201).send({ message: "Event added!" });
   } catch (err) {
@@ -57,7 +57,7 @@ router.put("/friends/:id", eventMustExist, async (req, res, next) => {
   const { id } = req.params;
   try {
     await db(
-      `UPDATE friends SET confirmed = !confirmed WHERE eventid = ${id};`
+      `UPDATE friendslist SET confirmed = !confirmed WHERE eventid = ${id};`
     );
     res.status(201).send({ message: "Friend will come to the event!" });
   } catch (err) {

@@ -2,18 +2,35 @@ import { useState } from "react";
 
 export default function Invite() {
   const [input, setInput] = useState({
-    event: { eventname: "", location: "", date: "" },
-    friend: { firstname: "", lastname: "", email: "" },
+    eventname: "",
+    location: "",
+    date: "",
+    firstname: "",
+    lastname: "",
+    email: "",
   });
   async function addEvent() {
+    const eventAdded = {
+      event: {
+        eventname: input.eventname,
+        location: input.location,
+        date: input.date,
+      },
+      friend: {
+        firstname: input.firstname,
+        lastname: input.lastname,
+        email: input.email,
+      },
+    };
     try {
       const response = await fetch("/api/events/", {
         method: "POST",
         headers: {
           "Content-type": "application/json",
         },
-        body: JSON.stringify(input),
+        body: JSON.stringify(eventAdded),
       });
+
       const data = await response.json();
     } catch (err) {
       console.log(err);
@@ -29,8 +46,12 @@ export default function Invite() {
     e.preventDefault();
     addEvent();
     setInput({
-      event: { eventname: "", location: "", date: "" },
-      friend: { firstname: "", lastname: "", email: "" },
+      eventname: "",
+      location: "",
+      date: "",
+      firstname: "",
+      lastname: "",
+      email: "",
     });
   };
   return (
@@ -42,8 +63,9 @@ export default function Invite() {
             className="form-control"
             type="text"
             name="eventname"
-            value={input.event.eventname}
+            value={input.eventname}
             onChange={handleInputChange}
+            required
           />
         </div>
         <div className="mb-3">
@@ -52,8 +74,9 @@ export default function Invite() {
             className="form-control"
             type="text"
             name="location"
-            value={input.event.location}
+            value={input.location}
             onChange={handleInputChange}
+            required
           />
         </div>
         <div className="mb-3">
@@ -62,8 +85,9 @@ export default function Invite() {
             className="form-control"
             type="datetime-local"
             name="date"
-            value={input.event.date}
+            value={input.date}
             onChange={handleInputChange}
+            required
           />
         </div>
         <div className="mb-3">
@@ -72,8 +96,9 @@ export default function Invite() {
             className="form-control"
             type="text"
             name="firstname"
-            value={input.friend.firstname}
+            value={input.firstname}
             onChange={handleInputChange}
+            required
           />
         </div>
         <div className="mb-3">
@@ -82,8 +107,9 @@ export default function Invite() {
             className="form-control"
             type="text"
             name="lastname"
-            value={input.friend.lastname}
+            value={input.lastname}
             onChange={handleInputChange}
+            required
           />
         </div>
         <div className="mb-3">
@@ -92,7 +118,7 @@ export default function Invite() {
             className="form-control"
             type="email"
             name="email"
-            value={input.friend.email}
+            value={input.email}
             onChange={handleInputChange}
             required
           />
