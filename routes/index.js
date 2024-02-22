@@ -20,20 +20,18 @@ router.get("/events", async function (req, res, next) {
 
 // POST EVENT and invitees
 router.post("/events", async function (req, res, next) {
-  const { event, friend } = req.body;
+  const { event, friends } = req.body;
   try {
     await db(
       `INSERT INTO eventlist (eventname, location, date) VALUES ("${event.eventname}", "${event.location}", "${event.date}");`
     );
-
-    const results = await db(
-      `SELECT id FROM eventlist WHERE eventname = "${event.eventname}";`
-    );
-    const eventid = results.data[0].id;
-
-    await db(
-      `INSERT INTO friendslist (firstname, lastname, email, confirmed, eventid) VALUES ("${friend.firstname}", "${friend.lastname}","${friend.email}", 0, ${eventid});`
-    );
+    const eventIdResult = await db(`SELECT LAST_INSERT_ID() as eventId;`);
+    const eventId = eventIdResult.data[0].eventId;
+    for (const friend of friends) {
+      await db(
+        `INSERT INTO friendlist (firstname, lastname, email, confirmed, eventid) VALUES ("${friend.firstname}", "${friend.lastname}","${friend.email}", 0, ${eventId});`
+      );
+    }
     res.status(201).send({ message: "Event added!" });
   } catch (err) {
     res.status(500).send(err);
@@ -57,7 +55,7 @@ router.put("/friends/:id", eventMustExist, async (req, res, next) => {
   const { id } = req.params;
   try {
     await db(
-      `UPDATE friendslist SET confirmed = !confirmed WHERE eventid = ${id};`
+      `UPDATE friendlist SET confirmed = !confirmed WHERE eventid = ${id};`
     );
     res.status(201).send({ message: "Friend will come to the event!" });
   } catch (err) {
