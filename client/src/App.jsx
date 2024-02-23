@@ -1,10 +1,11 @@
-import { useState, useEffect } from "react";
+// import { useState, useEffect } from "react";
 import "./App.css";
-import { Routes, Route, Link, Outlet } from "react-router-dom";
+import { Routes, Route, Link } from "react-router-dom";
 import Page404 from "./pages/Page404";
 import Home from "./pages/Home";
 import Invite from "./pages/Invite";
 import Events from "./pages/Events";
+import Event from "./pages/Event";
 
 export default function App() {
   return (
@@ -33,6 +34,9 @@ export default function App() {
         <Route path="/" element={<Home />} />
         <Route path="/invite" element={<Invite />} />
         <Route path="/events" element={<Events />} />
+        <Route path="/events" element={<Events />}>
+          <Route path=":id" element={<Event />} />
+        </Route>
         <Route path="*" element={<Page404 />} />
       </Routes>
     </div>

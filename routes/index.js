@@ -18,6 +18,22 @@ router.get("/events", async function (req, res, next) {
   }
 });
 
+// GET WHOLE EVENT by id
+router.get("/events/:id", eventMustExist, async function (req, res, next) {
+  const { id } = req.params;
+  try {
+    const results = await db(
+      `SELECT e.*, f.firstname, f.lastname, f.email, f.confirmed 
+      FROM eventlist as e 
+      INNER JOIN friendlist AS f ON e.id = f.eventid 
+      WHERE e.id = ${id};`
+    );
+    res.send(results.data);
+  } catch (err) {
+    res.status(500).send(err);
+  }
+});
+
 // POST EVENT and invitees
 router.post("/events", async function (req, res, next) {
   const { event, friends } = req.body;
@@ -42,15 +58,18 @@ router.post("/events", async function (req, res, next) {
 
 // DELETE EVENT
 router.delete("/events/:id", eventMustExist, async function (req, res, next) {
+  const { id } = req.params;
   try {
-    const { id } = req.params;
-    // DELETE IN sql
-    await db(`DELETE FROM eventlist WHERE id = ${id}`);
+    const results = await db(`DELETE FROM eventlist WHERE id = ${id}`);
+    res.send(results.data);
     res.status(201).send({ message: "Event deleted!" });
   } catch (err) {
     res.status(500).send(err);
   }
 });
+
+//endpoint send invitation that sends email with nodemailer loop // contains url
+// create page Confirmation,
 
 // UPDATE ENDPOINT FOR THE EMAIL /friends/id
 router.put("/friends/:id", eventMustExist, async (req, res, next) => {
