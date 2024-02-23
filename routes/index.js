@@ -25,11 +25,13 @@ router.post("/events", async function (req, res, next) {
     await db(
       `INSERT INTO eventlist (eventname, location, date) VALUES ("${event.eventname}", "${event.location}", "${event.date}");`
     );
-    const eventIdResult = await db(`SELECT LAST_INSERT_ID() as eventId;`);
-    const eventId = eventIdResult.data[0].eventId;
+    const results = await db(
+      `SELECT id from eventlist order by id desc limit 1;`
+    );
+    const eventid = results.data[0].id;
     for (const friend of friends) {
       await db(
-        `INSERT INTO friendlist (firstname, lastname, email, confirmed, eventid) VALUES ("${friend.firstname}", "${friend.lastname}","${friend.email}", 0, ${eventId});`
+        `INSERT INTO friendlist (firstname, lastname, email, confirmed, eventid) VALUES ("${friend.firstname}", "${friend.lastname}","${friend.email}", 0, ${eventid});`
       );
     }
     res.status(201).send({ message: "Event added!" });
