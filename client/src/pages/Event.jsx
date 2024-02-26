@@ -14,10 +14,13 @@ export default function Event() {
         id: data[0].id,
         eventname: data[0].eventname,
         location: data[0].location,
-        date: data[0].date,
+        date: new Date(data[0].date).toLocaleString("en-US", {
+          dateStyle: "short",
+          timeStyle: "short",
+        }),
       };
       setEventData(extractedEventData);
-      console.log(data);
+      console.log(friendsData, data);
       setFriendsData(data);
     } catch (err) {
       console.log(err);
@@ -40,22 +43,45 @@ export default function Event() {
       console.log(err);
     }
   };
+
+  const sendEmail = async (id) => {
+    try {
+      const response = await fetch(`/api/send-email/${id}`, {
+        method: "GET",
+      });
+      const data = await response.json();
+      window.alert("Emails sent successfully!");
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   return (
     <div>
       <div>
-        {eventData.eventname} {eventData.location} {eventData.date}
+        The {eventData.eventname} event will be at {eventData.location} on{" "}
+        {eventData.date}.
       </div>
-      {friendsData.map((friend) => (
-        <div key={friend.id}>
+      The friends invited are:
+      {friendsData.map((friend, i) => (
+        <div key={i}>
           {friend.firstname} {friend.lastname} {friend.email} {friend.confirmed}
         </div>
       ))}
-      <button onClick={() => deleteEvent(eventData.id)}>DELETE EVENT</button>{" "}
-      <br></br>
-      <br></br>
-      <button onClick={() => sendInvitation(eventData.id)}>
-        Send Invitation
-      </button>
+      <div className="btn-group mt-4">
+        <button
+          className="btn btn-outline-secondary"
+          onClick={() => deleteEvent(eventData.id)}
+        >
+          <i class="fa-solid fa-trash"></i> Delete Event
+        </button>{" "}
+        <button
+          className="btn btn-outline-secondary"
+          onClick={() => sendEmail(eventData.id)}
+        >
+          <i class="fa-solid fa-envelope"></i> Send Invitation
+        </button>
+      </div>
     </div>
   );
 }

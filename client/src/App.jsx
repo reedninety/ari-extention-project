@@ -6,6 +6,7 @@ import Home from "./pages/Home";
 import Invite from "./pages/Invite";
 import Events from "./pages/Events";
 import Event from "./pages/Event";
+import Confirmation from "./pages/Confirmation";
 
 export default function App() {
   return (
@@ -29,14 +30,13 @@ export default function App() {
           </li>
         </ul>
       </div>
-      <h1>OWL MAIL</h1>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/invite" element={<Invite />} />
-        <Route path="/events" element={<Events />} />
         <Route path="/events" element={<Events />}>
           <Route path=":id" element={<Event />} />
         </Route>
+        <Route path="/events/:id/confirm" element={<Confirmation />} />
         <Route path="*" element={<Page404 />} />
       </Routes>
     </div>

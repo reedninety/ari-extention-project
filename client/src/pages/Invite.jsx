@@ -89,52 +89,60 @@ export default function Invite() {
           </div>
         </div>
 
-        <button
-          type="button"
-          onClick={handleAddFriend}
-          className="btn btn-primary"
-        >
-          Add Friends
-        </button>
-        {friends.map((friend, i) => (
-          <div key={i} className="row mt-4">
-            <div className=" col-4 mb-3">
-              <input
-                className="form-control"
-                placeholder="First Name"
-                type="text"
-                name="firstname"
-                value={friend.firstname}
-                onChange={(e) => handleFriendInputChange(e, i)}
-                required
-              />
-            </div>
-            <div className=" col-4 mb-3">
-              <input
-                placeholder="Last Name"
-                className="form-control"
-                type="text"
-                name="lastname"
-                value={friend.lastname}
-                onChange={(e) => handleFriendInputChange(e, i)}
-                required
-              />
-            </div>
-            <div className=" col-4 mb-3">
-              <input
-                placeholder="Email address"
-                className="form-control"
-                type="email"
-                name="email"
-                value={friend.email}
-                onChange={(e) => handleFriendInputChange(e, i)}
-                required
-              />
-            </div>
+        <div className="row mt-4">
+          <div className="col-11">
+            {friends.map((friend, i) => (
+              <div key={i} className="">
+                <div className="row">
+                  <div className=" col-4 mb-3">
+                    <input
+                      className="form-control"
+                      placeholder="First Name"
+                      type="text"
+                      name="firstname"
+                      value={friend.firstname}
+                      onChange={(e) => handleFriendInputChange(e, i)}
+                      required
+                    />
+                  </div>
+                  <div className=" col-4 mb-3">
+                    <input
+                      placeholder="Last Name"
+                      className="form-control"
+                      type="text"
+                      name="lastname"
+                      value={friend.lastname}
+                      onChange={(e) => handleFriendInputChange(e, i)}
+                      required
+                    />
+                  </div>
+                  <div className=" col-4 mb-3">
+                    <input
+                      placeholder="Email address"
+                      className="form-control"
+                      type="email"
+                      name="email"
+                      value={friend.email}
+                      onChange={(e) => handleFriendInputChange(e, i)}
+                      required
+                    />
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
-        ))}
+          <div className="col-1">
+            <button
+              type="button"
+              onClick={handleAddFriend}
+              className="btn btn-outline-secondary"
+            >
+              <i class="fa-solid fa-plus"></i>
+            </button>
+          </div>
+        </div>
 
-        <button type="submit" className="btn btn-primary">
+        <button type="submit" className="btn btn-outline-secondary">
           Create Event
         </button>
       </form>

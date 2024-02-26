@@ -2,6 +2,10 @@ const express = require("express");
 const router = express.Router();
 const db = require("../model/helper");
 const eventMustExist = require("../guards/eventMustExist");
+require("dotenv").config();
+const EMAIL_USER = process.env.EMAIL_USER;
+const EMAIL_PASS = process.env.EMAIL_PASS;
+const nodemailer = require("nodemailer");
 
 /* GET home page. */
 router.get("/", function (req, res, next) {
@@ -69,14 +73,75 @@ router.delete("/events/:id", eventMustExist, async function (req, res, next) {
 });
 
 //endpoint send invitation that sends email with nodemailer loop // contains url
-// create page Confirmation,
+const transporter = nodemailer.createTransport({
+  service: "Gmail",
+  host: "smtp.gmail.com",
+  port: 465,
+  secure: true,
+  auth: {
+    user: EMAIL_USER,
+    pass: EMAIL_PASS,
+  },
+});
 
-// UPDATE ENDPOINT FOR THE EMAIL /friends/id
-router.put("/friends/:id", eventMustExist, async (req, res, next) => {
+// function to send email
+function sendEmail(receiver, eventid, eventname, location, date, firstname) {
+  let confirmationLink = `http://localhost:5173/events/${eventid}/confirm?email=${receiver}`;
+  const formattedDate = new Date(date).toLocaleString("en-US", {
+    dateStyle: "short",
+    timeStyle: "short",
+  });
+  try {
+    const info = transporter.sendMail(
+      {
+        from: `Arianne Napa <${EMAIL_USER}>`,
+        to: receiver,
+        subject: "You are invited to a new event!",
+        text: `
+        Dear ${firstname},
+        I am glad to invite you to join the ${eventname} event at ${location} on ${formattedDate}.
+        Please confirm your presence to the event by clicking on the link: ${confirmationLink}`,
+      },
+      (error, info) => {
+        if (error) {
+          console.error("Error occurred:", error.message);
+        } else {
+          console.log("Email sent:", info.response);
+        }
+      }
+    );
+    console.log(info);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+router.get("/send-email/:id", eventMustExist, async function (req, res, next) {
   const { id } = req.params;
   try {
+    const results =
+      await db(`SELECT e.eventname, e.location, e.date, f.firstname, f.email, f.confirmed 
+    FROM eventlist AS e 
+    LEFT JOIN friendlist AS f ON e.id = f.eventid 
+    WHERE e.id = ${id} AND confirmed = 0;`);
+
+    results.data.forEach(({ email, eventname, location, date, firstname }) => {
+      sendEmail(email, id, eventname, location, date, firstname);
+    });
+
+    res.status(200).send("Emails sent successfully!");
+  } catch (err) {
+    res.status(500).send(err);
+  }
+});
+
+//endpoint after they click on the link
+router.put("/events/:id/:email", eventMustExist, async (req, res, next) => {
+  const { id, email } = req.params;
+
+  try {
     await db(
-      `UPDATE friendlist SET confirmed = !confirmed WHERE eventid = ${id};`
+      `UPDATE friendlist SET confirmed = 1 WHERE eventid = ${id} AND email = "${email}";`
     );
     res.status(201).send({ message: "Friend will come to the event!" });
   } catch (err) {
