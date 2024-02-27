@@ -58,14 +58,20 @@ export default function Event() {
 
   return (
     <div>
-      <div>
+      <div className="mt-4 fs-3">
         The {eventData.eventname} event will be at {eventData.location} on{" "}
         {eventData.date}.
       </div>
-      The friends invited are:
+      <div className="mt-4 fs-4">The friends invited are:</div>
       {friendsData.map((friend, i) => (
-        <div key={i}>
-          {friend.firstname} {friend.lastname} {friend.email} {friend.confirmed}
+        <div className="row mt-3" key={i}>
+          <div className="col-4">
+            {friend.firstname} {friend.lastname}
+          </div>
+          <div className="col-4">{friend.email}</div>
+          <div className="col-4">
+            Confirmed: {friend.confirmed ? "YES" : "NO"}
+          </div>
         </div>
       ))}
       <div className="btn-group mt-4">

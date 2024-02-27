@@ -4,7 +4,7 @@ import { useParams, useLocation } from "react-router-dom";
 export default function Confirmation() {
   let { id } = useParams();
   const location = useLocation();
-  const searchParams = new URLSearchParams(location.search);
+  const searchParams = new URLSearchParams(location.search); // replace search
   const email = searchParams.get("email");
 
   const updateConfirmation = async () => {
