@@ -137,7 +137,7 @@ export default function Invite() {
               onClick={handleAddFriend}
               className="btn btn-outline-secondary"
             >
-              <i class="fa-solid fa-plus"></i>
+              <i className="fa-solid fa-plus"></i>
             </button>
           </div>
         </div>

@@ -4,6 +4,8 @@
 
 SET foreign_key_checks = 0;
 DROP TABLE if exists eventlist;
+DROP TABLE if exists friendlist;
+DROP TABLE if exists users;
 SET foreign_key_checks = 1;
 
 --
@@ -25,5 +27,15 @@ CREATE TABLE friendlist(
     email VARCHAR(255) unique,
     confirmed BOOLEAN,
     eventid INT NOT NULL,
+    FOREIGN KEY (eventid) REFERENCES eventlist(id) ON DELETE CASCADE
+    );
+
+CREATE TABLE users(
+    id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    username VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    user_firstname VARCHAR(255) NOT NULL,
+    user_surname VARCHAR(255) NOT NULL,
+    eventid INT,
     FOREIGN KEY (eventid) REFERENCES eventlist(id) ON DELETE CASCADE
     );
