@@ -19,6 +19,7 @@ router.post("/login", async (req, res) => {
   const { username, password } = req.body;
 
   try {
+    // checking if the user exists
     const results = await db(
       `SELECT * FROM users WHERE username = "${username}"`
     );
@@ -26,10 +27,12 @@ router.post("/login", async (req, res) => {
     if (user) {
       const user_id = user.id;
 
+      //checking that the password matches 
       const correctPassword = await bcrypt.compare(password, user.password);
 
       if (!correctPassword) throw new Error("Incorrect password");
 
+      //first argument of token is a payload(normally user_id because we ues the user_id to know who we are. second argument is an internal password)
       var token = jwt.sign({ user_id }, supersecret);
       res.send({ message: "Login successful, here is your token", token });
     } else {
