@@ -79,13 +79,13 @@ export default function Event() {
           className="btn btn-outline-secondary"
           onClick={() => deleteEvent(eventData.id)}
         >
-          <i class="fa-solid fa-trash"></i> Delete Event
+          <i className="fa-solid fa-trash"></i> Delete Event
         </button>{" "}
         <button
           className="btn btn-outline-secondary"
           onClick={() => sendEmail(eventData.id)}
         >
-          <i class="fa-solid fa-envelope"></i> Send Invitation
+          <i className="fa-solid fa-envelope"></i> Send Invitation
         </button>
       </div>
     </div>

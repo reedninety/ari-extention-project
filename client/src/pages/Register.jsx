@@ -2,6 +2,20 @@ import React from 'react';
 import { Link } from "react-router-dom";
 
 export default function Register() {
+  const [newUser, setNewUser] = useState({
+    username: "",
+    password: "",
+    user_firstname: "",
+    user_surname: ""
+});
+
+function handleChange(event){
+  const{ value, name } = event.target;
+  setNewUser((state) => ({
+      ...state,
+      [name]: value
+  }))
+}
   return (
     <div>
         <div className="fs-3">Register</div>
@@ -14,8 +28,8 @@ export default function Register() {
               className="form-control"
               type="text"
               name="username"
-            //   value={event.eventname}
-            //   onChange={handleEventInputChange}
+              value={newUser.username}
+              onChange={handleChange}
               required
             />
           </div>
@@ -25,8 +39,8 @@ export default function Register() {
               className="form-control"
               type="text"
               name="location"
-            //   value={event.location}
-            //   onChange={handleEventInputChange}
+              value={newUser.password}
+              onChange={handleChange}             
               required
             />
           </div>
@@ -36,8 +50,8 @@ export default function Register() {
               className="form-control"
               type="text"
               name="firstname"
-            //   value={event.date}
-            //   onChange={handleEventInputChange}
+              value={newUser.firstname}
+              onChange={handleChange}
               required
             />
           </div>
@@ -47,8 +61,8 @@ export default function Register() {
               className="form-control"
               type="text"
               name="lastname"
-            //   value={event.date}
-            //   onChange={handleEventInputChange}
+              value={newUser.surname}
+              onChange={handleChange}
               required
             />
           </div>

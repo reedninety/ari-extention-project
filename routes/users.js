@@ -6,6 +6,7 @@ require("dotenv").config();
 var bcrypt = require("bcrypt")
 const nodemailer = require("nodemailer");
 const saltRounds = 10;
+const userMustBeLoggedIn = require("../guards/userMustBeLoggedIn")
 
 const supersecret = process.env.SUPER_SECRET;
 
@@ -60,4 +61,14 @@ router.post("/register", async (req, res) => {
   }
 });
 
+//want a get profile information for logged in users
+router.get("/profile", userMustBeLoggedIn, async (req, res) => {
+
+try {
+  const results = await db(`SELECT * FROM eventlist WHERE userid = ${req.user_id};`)
+  res.send(results.data)
+} catch (err) {
+  res.status(500).send({ message: err.message });
+};
+});
 module.exports = router;

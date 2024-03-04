@@ -11,13 +11,21 @@ SET foreign_key_checks = 1;
 --
 -- Create Tables
 --
-
+CREATE TABLE users(
+    id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    username VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    user_firstname VARCHAR(255) NOT NULL,
+    user_surname VARCHAR(255) NOT NULL
+   
+    );
 CREATE TABLE eventlist(
-    id INT NOT NULL AUTO_INCREMENT, 
+    id INT NOT NULL PRIMARY KEY AUTO_INCREMENT, 
     eventname VARCHAR(40) not null, 
     location VARCHAR(255) not null,
     date DATETIME NOT NULL,
-    PRIMARY KEY (id)
+    userid INT,
+     FOREIGN KEY (userid) REFERENCES users(id) ON DELETE CASCADE
     );
 
 CREATE TABLE friendlist(
@@ -30,12 +38,3 @@ CREATE TABLE friendlist(
     FOREIGN KEY (eventid) REFERENCES eventlist(id) ON DELETE CASCADE
     );
 
-CREATE TABLE users(
-    id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    username VARCHAR(255) NOT NULL,
-    password VARCHAR(255) NOT NULL,
-    user_firstname VARCHAR(255) NOT NULL,
-    user_surname VARCHAR(255) NOT NULL,
-    eventid INT,
-    FOREIGN KEY (eventid) REFERENCES eventlist(id) ON DELETE CASCADE
-    );
