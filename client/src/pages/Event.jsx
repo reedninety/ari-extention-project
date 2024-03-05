@@ -9,7 +9,12 @@ export default function Event() {
 
   async function getEvent() {
     try {
-      const response = await fetch(`/api/events/${id}`);
+      const response = await fetch(`/api/events/${id}`, {
+        method: "GET",
+        headers: {
+          "authorization": "Bearer " + localStorage.getItem("token"),
+        },
+      });
       const data = await response.json();
       const extractedEventData = {
         id: data[0].id,

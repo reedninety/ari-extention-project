@@ -29,7 +29,7 @@ export default function Events() {
       <div className="fs-3">Your Events</div>
 
       {eventList.map((eventType) => (
-        <div key={eventType.userid}>
+        <div key={eventType.id}>
           <Link to={`/events/${eventType.userid}`} className="fs-4">
             {eventType.eventname}
           </Link>

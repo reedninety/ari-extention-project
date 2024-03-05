@@ -60,7 +60,7 @@ function handleChange(event){
             <label className="form-label">Password</label>
             <input
               className="form-control"
-              type="text"
+              type="password"
               name="password"
               value={newUser.password}
               onChange={handleChange}             

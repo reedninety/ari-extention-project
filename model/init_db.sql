@@ -34,6 +34,6 @@ CREATE TABLE friendlist(
     lastname VARCHAR(255) not null,
     email VARCHAR(255) not null,
     confirmed BOOLEAN,
-    eventid INT NOT NULL
+    eventid INT NOT NULL,
     FOREIGN KEY (eventid) REFERENCES eventlist(id) ON DELETE CASCADE
     );

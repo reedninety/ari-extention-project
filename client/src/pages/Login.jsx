@@ -89,7 +89,7 @@ const { username, password } = input;
             <label className="form-label">Password</label>
             <input
               className="form-control"
-              type="text"
+              type="password"
               name="password"
               value={input.password}
               onChange={handleChange}
