@@ -40,7 +40,7 @@ router.post("/login", async (req, res) => {
       throw new Error("User does not exist");
     }
   } catch (err) {
-    res.status(400).send({ message: err.message });
+    res.status(500).send({ message: err.message });
   }
 });
 
@@ -57,15 +57,15 @@ router.post("/register", async (req, res) => {
 
     res.send({ message: "Register successful" });
   } catch (err) {
-    res.status(400).send({ message: err.message });
+    res.status(500).send({ message: err.message });
   }
 });
 
-//want a get profile information for logged in users
-router.get("/profile", userMustBeLoggedIn, async (req, res) => {
-
+// want a get profile information for logged in users
+router.get("/:id", userMustBeLoggedIn, async (req, res) => {
+ const {user_id} = req;
 try {
-  const results = await db(`SELECT * FROM eventlist WHERE userid = ${req.user_id};`)
+  const results = await db(`SELECT * FROM eventlist WHERE userid = ${user_id};`)
   res.send(results.data)
 } catch (err) {
   res.status(500).send({ message: err.message });

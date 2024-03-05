@@ -1,13 +1,36 @@
 import React from 'react';
 import { Link } from "react-router-dom";
+import { useState } from "react";
+import useAuth from "../hooks/useAuth";
 
 export default function Register() {
+  const { isLoggedIn, signIn } = useAuth();
   const [newUser, setNewUser] = useState({
     username: "",
     password: "",
     user_firstname: "",
     user_surname: ""
 });
+
+async function registerUser () {
+  try {
+    const response = await fetch("/api/users/register", {
+      method: "POST",
+      headers: {
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify(newUser),
+    });
+    if (!response.ok) {
+      throw new Error("Failed to add event");
+    }
+    const data = await response.json();
+    //actually, i want them to be directed to the log in page
+    signIn();
+  } catch (err) {
+    console.log(err);
+  }
+}
 
 function handleChange(event){
   const{ value, name } = event.target;
@@ -20,7 +43,7 @@ function handleChange(event){
     <div>
         <div className="fs-3">Register</div>
 
-        <form className="mt-3">
+        <form className="mt-3" onSubmit={registerUser}>
         <div className="row mb-3">
           <div>
             <label className="form-label">Username</label>
@@ -38,7 +61,7 @@ function handleChange(event){
             <input
               className="form-control"
               type="text"
-              name="location"
+              name="password"
               value={newUser.password}
               onChange={handleChange}             
               required
@@ -49,8 +72,8 @@ function handleChange(event){
             <input
               className="form-control"
               type="text"
-              name="firstname"
-              value={newUser.firstname}
+              name="user_firstname"
+              value={newUser.user_firstname}
               onChange={handleChange}
               required
             />
@@ -60,8 +83,8 @@ function handleChange(event){
             <input
               className="form-control"
               type="text"
-              name="lastname"
-              value={newUser.surname}
+              name="user_surname"
+              value={newUser.user_surname}
               onChange={handleChange}
               required
             />

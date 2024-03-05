@@ -1,4 +1,7 @@
 import { useState } from "react";
+import { useParams } from "react-router-dom";
+import useAuth from "../hooks/useAuth";
+
 
 export default function Invite() {
   const [event, setEvent] = useState({
@@ -9,12 +12,16 @@ export default function Invite() {
   const [friends, setFriends] = useState([
     { firstname: "", lastname: "", email: "" },
   ]);
+
+
+
   async function addEvent(event, friends) {
     try {
-      const response = await fetch("/api/events", {
+      const response = await fetch("/api/invite", {
         method: "POST",
         headers: {
           "Content-type": "application/json",
+          "authorization": "Bearer " + localStorage.getItem("token"),
         },
         body: JSON.stringify({ event, friends }),
       });

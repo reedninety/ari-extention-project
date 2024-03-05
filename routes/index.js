@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const db = require("../model/helper");
 const eventMustExist = require("../guards/eventMustExist");
+const userMustBeLoggedIn = require("../guards/userMustBeLoggedIn");
 require("dotenv").config();
 const EMAIL_USER = process.env.EMAIL_USER;
 const EMAIL_PASS = process.env.EMAIL_PASS;
@@ -13,9 +14,10 @@ router.get("/", function (req, res, next) {
 });
 
 // GET EVENTLIST
-router.get("/events", async function (req, res, next) {
+router.get("/events/", userMustBeLoggedIn, async function (req, res) {
+  const { user_id }  = req;
   try {
-    const results = await db("SELECT * FROM eventlist ORDER BY id ASC;");
+    const results = await db(`SELECT * FROM eventlist WHERE userid = ${user_id};`);
     res.send(results.data);
   } catch (err) {
     res.status(500).send(err);
@@ -23,7 +25,7 @@ router.get("/events", async function (req, res, next) {
 });
 
 // GET WHOLE EVENT by id
-router.get("/events/:id", eventMustExist, async function (req, res, next) {
+router.get("/events/:id", userMustBeLoggedIn, eventMustExist, async function (req, res, next) {
   const { id } = req.params;
   try {
     const results = await db(
@@ -39,11 +41,13 @@ router.get("/events/:id", eventMustExist, async function (req, res, next) {
 });
 
 // POST EVENT and invitees
-router.post("/events", async function (req, res, next) {
+router.post("/invite", userMustBeLoggedIn, async function (req, res, next) {
   const { event, friends } = req.body;
+  const { user_id }  = req;
+  console.log(user_id);
   try {
     await db(
-      `INSERT INTO eventlist (eventname, location, date) VALUES ("${event.eventname}", "${event.location}", "${event.date}");`
+      `INSERT INTO eventlist (eventname, location, date, userid) VALUES ("${event.eventname}", "${event.location}", "${event.date}", ${user_id});`
     );
     const results = await db(
       `SELECT id from eventlist order by id desc limit 1;`
@@ -61,10 +65,11 @@ router.post("/events", async function (req, res, next) {
 });
 
 // DELETE EVENT
-router.delete("/events/:id", eventMustExist, async function (req, res, next) {
-  const { id } = req.params;
+router.delete("/events/:id", eventMustExist, async (req, res) => {
   try {
-    const results = await db(`DELETE FROM eventlist WHERE id = ${id}`);
+    const { id } = req.params;
+    await db(`DELETE FROM eventlist WHERE id= ${id};`);
+    const results = await db("SELECT * FROM eventlist ORDER BY id ASC;");
     res.send(results.data);
     res.status(201).send({ message: "Event deleted!" });
   } catch (err) {

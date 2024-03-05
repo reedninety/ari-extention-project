@@ -3,7 +3,7 @@ import { Routes, Route, Link } from "react-router-dom";
 import { useState } from "react";
 import axios, {isCancel, AxiosError} from 'axios';
 import Events from "./Events";
-import useAuth from "../components/useAuth";
+import useAuth from "../hooks/useAuth";
 
 export default function Login() {
   const {isLoggedIn, signIn } = useAuth();
@@ -12,7 +12,8 @@ export default function Login() {
     password: ""
 });
 const [data, setData] = useState(null);
-  
+
+const { username, password } = input;
 
   function handleChange(event){
     const{ value, name } = event.target;
@@ -29,7 +30,7 @@ const [data, setData] = useState(null);
           //store the token locally- put it in pocket
           localStorage.setItem("token", data.token);
           console.log(data.message, data.token);
-        
+        signIn();
         } catch (error) {
           console.log(error);
         }
@@ -45,7 +46,7 @@ const [data, setData] = useState(null);
 
   const requestData = async () => {
     try {
-      const { data } = await axios("/api/users/profile", {
+      const { data } = await axios("/api/users", {
         headers: {
           authorization: "Bearer " + localStorage.getItem("token"),
         },
@@ -97,9 +98,11 @@ const [data, setData] = useState(null);
           </div>
         </div>
 
-        <button type="submit" className="btn btn-outline-secondary">
-          Login
-        </button>
+        <div className="d-flex gap-2 justify-content-center">
+          <button className="btn btn-secondary" onClick={login}>
+            Log in
+          </button>
+        </div>
       </form>
       <Routes>
       <Route path="/events" element={<Events />}></Route>

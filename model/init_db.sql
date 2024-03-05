@@ -24,17 +24,16 @@ CREATE TABLE eventlist(
     eventname VARCHAR(40) not null, 
     location VARCHAR(255) not null,
     date DATETIME NOT NULL,
-    userid INT,
-     FOREIGN KEY (userid) REFERENCES users(id) ON DELETE CASCADE
+    userid INT NOT NULL,
+    FOREIGN KEY (userid) REFERENCES users(id) ON DELETE CASCADE
     );
 
 CREATE TABLE friendlist(
     id INT NOT NULL PRIMARY KEY AUTO_INCREMENT, 
     firstname VARCHAR(255) not null, 
     lastname VARCHAR(255) not null,
-    email VARCHAR(255) unique,
+    email VARCHAR(255) not null,
     confirmed BOOLEAN,
-    eventid INT NOT NULL,
+    eventid INT NOT NULL
     FOREIGN KEY (eventid) REFERENCES eventlist(id) ON DELETE CASCADE
     );
-
